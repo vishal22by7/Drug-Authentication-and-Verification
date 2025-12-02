@@ -139,14 +139,22 @@ async function initializeDatabase() {
 app.use(cors());
 app.use(express.json());
 
+app.use(express.static('public', {
+    setHeaders: (res, path) => {
+        if (path.endsWith('.css')) {
+            res.setHeader('Content-Type', 'text/css');
+        } else if (path.endsWith('.js')) {
+            res.setHeader('Content-Type', 'application/javascript');
+        }
+    }
+}));
+
 app.use(async (req, res, next) => {
-    if (!isInitialized && req.path !== '/api/init-db' && req.path !== '/api/add-events') {
+    if (!isInitialized && req.path !== '/api/init-db' && req.path !== '/api/add-events' && !req.path.startsWith('/api/')) {
         await initializeDatabase();
     }
     next();
 });
-
-app.use(express.static('public'));
 
 app.use('/api/drug', drugRoutes);
 app.use('/api/supply', supplyRoutes);
