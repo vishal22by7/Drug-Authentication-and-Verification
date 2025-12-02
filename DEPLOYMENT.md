@@ -60,10 +60,14 @@
 
 8. **Wait for deployment** (2-3 minutes)
 
-9. **After deployment**, initialize the database:
-   - Visit: `https://your-app.vercel.app/api/init-db` (POST request)
-   - Or use: `curl -X POST https://your-app.vercel.app/api/init-db`
-   - Then: `curl -X POST https://your-app.vercel.app/api/add-events`
+9. **Get your deployment URL**:
+   - After deployment completes, Vercel will show you a URL like: `https://your-app-name.vercel.app`
+   - This is your live project URL! 🎉
+   - You can also find it in: Vercel Dashboard → Your Project → Deployments → Click on latest deployment
+
+10. **Access your project**:
+    - Simply visit: `https://your-app-name.vercel.app` in your browser
+    - The database will **auto-initialize on first request** (no manual setup needed!)
 
 ### Benefits:
 ✅ Automatic deployments on every push  
@@ -103,10 +107,9 @@ vercel
 vercel --prod
 ```
 
-### Step 6: Initialize Database
-After deployment, visit:
-- `https://your-app.vercel.app/api/init-db` (POST)
-- `https://your-app.vercel.app/api/add-events` (POST)
+### Step 6: Access Your Project
+- Visit: `https://your-app.vercel.app` in your browser
+- The database will **auto-initialize on first request** (no manual setup needed!)
 
 ---
 
@@ -116,15 +119,15 @@ After deployment, visit:
 
 Since Vercel uses serverless functions, the database needs to be initialized after each deployment. You have two options:
 
-**Option A: Manual Initialization**
+**✅ Auto-initialization is now enabled!**
+
+The database and events will automatically initialize on the first request to your deployed app. No manual setup needed!
+
+If you need to manually re-initialize, you can still use:
 ```bash
 curl -X POST https://your-app.vercel.app/api/init-db
 curl -X POST https://your-app.vercel.app/api/add-events
 ```
-
-**Option B: Auto-initialize on first request** (Recommended)
-
-We can modify `server.js` to auto-initialize on first request. Let me know if you want this!
 
 ### Environment Variables
 
@@ -160,7 +163,47 @@ git remote add origin https://github.com/YOUR_USERNAME/REPO_NAME.git
 git push -u origin main
 
 # Then deploy via Vercel Dashboard (GitHub integration)
+# After deployment, visit: https://your-app-name.vercel.app
 ```
+
+## 🌐 How to Access Your Deployed Project
+
+### Step 1: Get Your Deployment URL
+
+After deployment completes, you'll see your URL in:
+
+**Option A: Vercel Dashboard**
+1. Go to https://vercel.com/dashboard
+2. Click on your project name
+3. You'll see the deployment URL at the top (e.g., `https://drug-auth-verification.vercel.app`)
+
+**Option B: Deployment Logs**
+- After deployment, Vercel shows: `✅ Production: https://your-app.vercel.app`
+
+**Option C: Project Settings**
+1. Go to your project in Vercel Dashboard
+2. Click "Settings" → "Domains"
+3. Your default domain is listed there
+
+### Step 2: Visit Your Project
+
+Simply open the URL in your browser:
+```
+https://your-app-name.vercel.app
+```
+
+### Step 3: Test the Application
+
+1. **Home Page**: `https://your-app-name.vercel.app`
+2. **Scan a QR Code**: Use codes like `DRG001`, `DRG003`, `DRG005`
+3. **View Results**: Check drug verification results
+4. **Supply Chain**: View supply chain history
+
+### Step 4: Share Your Project
+
+You can share your deployment URL with anyone! It's live and accessible worldwide.
+
+**Note**: The database auto-initializes on first request, so everything works immediately!
 
 ---
 
