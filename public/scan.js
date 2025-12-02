@@ -1,22 +1,36 @@
 let html5QrcodeScanner = null;
 let isScanning = false;
 
-const startBtn = document.getElementById('start-btn');
-const stopBtn = document.getElementById('stop-btn');
-const qrReader = document.getElementById('qr-reader');
-const qrResults = document.getElementById('qr-reader-results');
-const statusDiv = document.getElementById('status');
+let startBtn, stopBtn, qrReader, qrResults, statusDiv;
 
-startBtn.addEventListener('click', startScanning);
-stopBtn.addEventListener('click', stopScanning);
+document.addEventListener('DOMContentLoaded', function() {
+    startBtn = document.getElementById('start-btn');
+    stopBtn = document.getElementById('stop-btn');
+    qrReader = document.getElementById('qr-reader');
+    qrResults = document.getElementById('qr-reader-results');
+    statusDiv = document.getElementById('status');
+
+    if (!startBtn || !stopBtn) {
+        console.error('Buttons not found!');
+        return;
+    }
+
+    startBtn.addEventListener('click', startScanning);
+    stopBtn.addEventListener('click', stopScanning);
+});
 
 function startScanning() {
     if (isScanning) return;
     
+    if (typeof Html5Qrcode === 'undefined') {
+        showStatus('Error: QR Scanner library not loaded. Please refresh the page.', 'error');
+        return;
+    }
+    
     html5QrcodeScanner = new Html5Qrcode("qr-reader");
     
     html5QrcodeScanner.start(
-        { facingMode: "environment" }, // Use back camera
+        { facingMode: "environment" },
         {
             fps: 10,
             qrbox: { width: 250, height: 250 }
@@ -28,9 +42,8 @@ function startScanning() {
         isScanning = true;
         startBtn.disabled = true;
         stopBtn.disabled = false;
-        qrResults.textContent = 'Scanning...';
-        statusDiv.textContent = '';
-        statusDiv.className = 'status';
+        if (qrResults) qrResults.textContent = 'Scanning...';
+        showStatus('Camera started. Point at QR code.', 'info');
     })
     .catch(err => {
         console.error('Error starting scanner:', err);
@@ -47,7 +60,7 @@ function stopScanning() {
             isScanning = false;
             startBtn.disabled = false;
             stopBtn.disabled = true;
-            qrResults.textContent = '';
+            if (qrResults) qrResults.textContent = '';
             showStatus('Scanning stopped', 'info');
         })
         .catch(err => {
@@ -56,13 +69,11 @@ function stopScanning() {
 }
 
 function onScanSuccess(decodedText, decodedResult) {
-    qrResults.textContent = `Scanned: ${decodedText}`;
+    if (qrResults) qrResults.textContent = `Scanned: ${decodedText}`;
     showStatus('QR code detected! Redirecting...', 'success');
     
-    // Stop scanning
     stopScanning();
     
-    // Redirect to result page with serial code
     setTimeout(() => {
         window.location.href = `result.html?code=${encodeURIComponent(decodedText)}`;
     }, 1000);
@@ -70,11 +81,11 @@ function onScanSuccess(decodedText, decodedResult) {
 
 function onScanError(errorMessage) {
     // Ignore frequent error messages during scanning
-    // Only show if it's a significant error
 }
 
 function showStatus(message, type) {
-    statusDiv.textContent = message;
-    statusDiv.className = `status ${type}`;
+    if (statusDiv) {
+        statusDiv.textContent = message;
+        statusDiv.className = `status ${type}`;
+    }
 }
-

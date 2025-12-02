@@ -1,27 +1,39 @@
 const urlParams = new URLSearchParams(window.location.search);
 const serialCode = urlParams.get('code');
 
-const resultContent = document.getElementById('result-content');
-const viewSupplyBtn = document.getElementById('view-supply-btn');
-const reportBtn = document.getElementById('report-btn');
-const scanAgainBtn = document.getElementById('scan-again-btn');
+let resultContent, viewSupplyBtn, reportBtn, scanAgainBtn;
 
-if (!serialCode) {
-    resultContent.innerHTML = '<div class="status error">No drug code provided. Please scan a QR code.</div>';
-} else {
-    fetchDrugInfo(serialCode);
-}
+document.addEventListener('DOMContentLoaded', function() {
+    resultContent = document.getElementById('result-content');
+    viewSupplyBtn = document.getElementById('view-supply-btn');
+    reportBtn = document.getElementById('report-btn');
+    scanAgainBtn = document.getElementById('scan-again-btn');
 
-viewSupplyBtn.addEventListener('click', () => {
-    window.location.href = `supply.html?code=${encodeURIComponent(serialCode)}`;
-});
+    if (!serialCode) {
+        if (resultContent) {
+            resultContent.innerHTML = '<div class="status error">No drug code provided. Please scan a QR code.</div>';
+        }
+    } else {
+        fetchDrugInfo(serialCode);
+    }
 
-reportBtn.addEventListener('click', () => {
-    window.location.href = `report.html?code=${encodeURIComponent(serialCode)}`;
-});
+    if (viewSupplyBtn) {
+        viewSupplyBtn.addEventListener('click', () => {
+            window.location.href = `supply.html?code=${encodeURIComponent(serialCode)}`;
+        });
+    }
 
-scanAgainBtn.addEventListener('click', () => {
-    window.location.href = 'index.html';
+    if (reportBtn) {
+        reportBtn.addEventListener('click', () => {
+            window.location.href = `report.html?code=${encodeURIComponent(serialCode)}`;
+        });
+    }
+
+    if (scanAgainBtn) {
+        scanAgainBtn.addEventListener('click', () => {
+            window.location.href = 'index.html';
+        });
+    }
 });
 
 async function fetchDrugInfo(code) {
@@ -41,6 +53,8 @@ async function fetchDrugInfo(code) {
 }
 
 function displayResult(data) {
+    if (!resultContent) return;
+
     const statusClass = data.status || 'unknown';
     const statusText = data.status ? data.status.charAt(0).toUpperCase() + data.status.slice(1) : 'Unknown';
     
@@ -104,11 +118,9 @@ function displayResult(data) {
     
     resultContent.innerHTML = drugInfoHtml;
     
-    // Show action buttons
-    viewSupplyBtn.style.display = 'inline-block';
-    reportBtn.style.display = 'inline-block';
+    if (viewSupplyBtn) viewSupplyBtn.style.display = 'inline-block';
+    if (reportBtn) reportBtn.style.display = 'inline-block';
     
-    // Show warning for counterfeit/recalled drugs
     if (data.status === 'counterfeit' || data.status === 'recalled') {
         resultContent.innerHTML += `
             <div class="status error">
@@ -119,8 +131,9 @@ function displayResult(data) {
 }
 
 function showError(message) {
-    resultContent.innerHTML = `
-        <div class="status error">${message}</div>
-    `;
+    if (resultContent) {
+        resultContent.innerHTML = `
+            <div class="status error">${message}</div>
+        `;
+    }
 }
-

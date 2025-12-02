@@ -1,19 +1,29 @@
 const urlParams = new URLSearchParams(window.location.search);
 const serialCode = urlParams.get('code');
 
-const supplyContent = document.getElementById('supply-content');
-const drugCodeDisplay = document.getElementById('drug-code-display');
-const backBtn = document.getElementById('back-btn');
+let supplyContent, drugCodeDisplay, backBtn;
 
-if (serialCode) {
-    drugCodeDisplay.textContent = `Drug Code: ${serialCode}`;
-    fetchSupplyChain(serialCode);
-} else {
-    supplyContent.innerHTML = '<div class="status error">No drug code provided.</div>';
-}
+document.addEventListener('DOMContentLoaded', function() {
+    supplyContent = document.getElementById('supply-content');
+    drugCodeDisplay = document.getElementById('drug-code-display');
+    backBtn = document.getElementById('back-btn');
 
-backBtn.addEventListener('click', () => {
-    window.location.href = `result.html?code=${encodeURIComponent(serialCode)}`;
+    if (serialCode) {
+        if (drugCodeDisplay) {
+            drugCodeDisplay.textContent = `Drug Code: ${serialCode}`;
+        }
+        fetchSupplyChain(serialCode);
+    } else {
+        if (supplyContent) {
+            supplyContent.innerHTML = '<div class="status error">No drug code provided.</div>';
+        }
+    }
+
+    if (backBtn) {
+        backBtn.addEventListener('click', () => {
+            window.location.href = `result.html?code=${encodeURIComponent(serialCode)}`;
+        });
+    }
 });
 
 async function fetchSupplyChain(code) {
@@ -33,6 +43,8 @@ async function fetchSupplyChain(code) {
 }
 
 function displaySupplyChain(data) {
+    if (!supplyContent) return;
+
     if (!data.events || data.events.length === 0) {
         supplyContent.innerHTML = `
             <div class="status info">
@@ -85,8 +97,9 @@ function displaySupplyChain(data) {
 }
 
 function showError(message) {
-    supplyContent.innerHTML = `
-        <div class="status error">${message}</div>
-    `;
+    if (supplyContent) {
+        supplyContent.innerHTML = `
+            <div class="status error">${message}</div>
+        `;
+    }
 }
-
