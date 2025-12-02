@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drug Authenticity Verification</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔬 Drug Authenticity Verification</h1>
+            <p class="subtitle">Scan QR code to verify drug authenticity</p>
+        </header>
+
+        <main>
+            <div class="scan-section">
+                <div id="qr-reader" class="qr-reader"></div>
+                <div id="qr-reader-results" class="qr-results"></div>
+            </div>
+
+            <div class="info-section">
+                <h2>How to use:</h2>
+                <ol>
+                    <li>Click "Start Scanning" button below</li>
+                    <li>Allow camera access when prompted</li>
+                    <li>Point camera at the QR code</li>
+                    <li>Wait for automatic detection</li>
+                </ol>
+            </div>
+
+            <div class="controls">
+                <button id="start-btn" class="btn btn-primary">Start Scanning</button>
+                <button id="stop-btn" class="btn btn-secondary" disabled>Stop Scanning</button>
+            </div>
+
+            <div id="status" class="status"></div>
+        </main>
+
+        <footer>
+            <p>Powered by Blockchain & OpenFDA API</p>
+        </footer>
+    </div>
+
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="scan.js"></script>
+</body>
+</html>
+
